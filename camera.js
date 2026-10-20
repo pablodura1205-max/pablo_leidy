@@ -146,6 +146,9 @@ class MotionCameraEngine {
 
     // Calcular diferencia de flujo y movimiento
     let idx = 0;
+    let totalMotionPixels = 0;
+    let sumMotionX = 0;
+    let sumMotionY = 0;
     for (let y = 0; y < ph; y++) {
       for (let x = 0; x < pw; x++, idx++) {
         const offset = idx * 4;
@@ -156,6 +159,10 @@ class MotionCameraEngine {
         this.prevFrame[idx] = gray;
 
         if (diff > this.threshold) {
+          totalMotionPixels++;
+          sumMotionX += x;
+          sumMotionY += y;
+
           // Clasificar en cuál zona ocurrió el movimiento
           if (x >= zones.up.x1 && x <= zones.up.x2 && y >= zones.up.y1 && y <= zones.up.y2) {
             motionCounts.up++;
@@ -178,7 +185,36 @@ class MotionCameraEngine {
       right: motionCounts.right / zoneSizes.right
     };
 
-    // Detectar el pico dominante
+    // Seguimiento continuo del jugador (centroide de masa/cuerpo)
+    if (totalMotionPixels > 30) {
+      const rawX = sumMotionX / totalMotionPixels / pw;
+      const rawY = sumMotionY / totalMotionPixels / ph;
+
+      if (this.smoothedX === undefined) this.smoothedX = 0.5;
+      if (this.smoothedY === undefined) this.smoothedY = 0.5;
+
+      this.smoothedX = this.smoothedX * 0.65 + rawX * 0.35;
+      this.smoothedY = this.smoothedY * 0.65 + rawY * 0.35;
+
+      let lane = 'center';
+      if (this.smoothedX < 0.38) lane = 'left';
+      else if (this.smoothedX > 0.62) lane = 'right';
+
+      let action = 'normal';
+      if (ratios.up > this.motionRatioTrigger) action = 'jump';
+      else if (ratios.down > this.motionRatioTrigger) action = 'crouch';
+
+      if (typeof this.onPoseUpdate === 'function') {
+        this.onPoseUpdate({
+          x: this.smoothedX,
+          y: this.smoothedY,
+          lane: lane,
+          action: action
+        });
+      }
+    }
+
+    // Detectar el pico dominante para eventos discretos
     let maxDir = null;
     let maxRatio = this.motionRatioTrigger;
 
