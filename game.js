@@ -65,6 +65,18 @@ class CognitiveApp {
       this.motionEngine.onMotionDetected = (dir) => {
         this.handleUniversalDirectionInput(dir, 'camera');
       };
+
+      // Seguimiento continuo del cuerpo de la persona frente a la cámara
+      this.motionEngine.onPoseUpdate = (pose) => {
+        if (this.currentScreen === 'screenChallenge' && this.coinTrack && this.coinTrack.isRunning) {
+          this.coinTrack.setContinuousPosition(pose.x);
+          if (pose.action === 'jump') {
+            this.coinTrack.performJump();
+          } else if (pose.action === 'crouch') {
+            this.coinTrack.performCrouch();
+          }
+        }
+      };
     }
   }
 
@@ -81,6 +93,11 @@ class CognitiveApp {
       const ok = await this.motionEngine.start();
       if (ok) {
         this.isCameraRunning = true;
+        const pipVideo = document.getElementById('trackPipVideo');
+        if (pipVideo) {
+          pipVideo.srcObject = this.motionEngine.stream;
+        }
+
         if (globalBtn) {
           globalBtn.textContent = '📷 Cámara: ACTIVA';
           globalBtn.classList.add('active');
@@ -100,6 +117,9 @@ class CognitiveApp {
     } else {
       this.motionEngine.stop();
       this.isCameraRunning = false;
+      const pipVideo = document.getElementById('trackPipVideo');
+      if (pipVideo) pipVideo.srcObject = null;
+
       if (globalBtn) {
         globalBtn.textContent = '📷 Cámara: OFF';
         globalBtn.classList.remove('active');
@@ -222,8 +242,26 @@ class CognitiveApp {
     document.querySelectorAll('.stage-back-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         window.soundEngine.playClick();
+        if (this.coinTrack) this.coinTrack.stop();
+        document.getElementById('coinSummaryModal')?.classList.remove('active');
         this.showScreen('screenHub');
       });
+    });
+
+    // Botones táctiles de apoyo para la Pista de Monedas
+    document.getElementById('btnTrackLeft')?.addEventListener('click', () => this.coinTrack?.setLane('left'));
+    document.getElementById('btnTrackRight')?.addEventListener('click', () => this.coinTrack?.setLane('right'));
+    document.getElementById('btnTrackJump')?.addEventListener('click', () => this.coinTrack?.performJump());
+    document.getElementById('btnTrackCrouch')?.addEventListener('click', () => this.coinTrack?.performCrouch());
+
+    // Botones del Modal de Monedas Atrapadas
+    document.getElementById('btnPlayAgainTrack')?.addEventListener('click', () => {
+      document.getElementById('coinSummaryModal')?.classList.remove('active');
+      this.coinTrack?.start();
+    });
+    document.getElementById('btnViewReportFromSummary')?.addEventListener('click', () => {
+      document.getElementById('coinSummaryModal')?.classList.remove('active');
+      this.generateAndShowReport();
     });
 
     // Accesos a Actividades
@@ -287,7 +325,12 @@ class CognitiveApp {
     if (this.currentScreen === 'screenLearn') {
       this.handleLearnPress(dir);
     } else if (this.currentScreen === 'screenChallenge') {
-      this.handleChallengeInput(dir);
+      if (this.coinTrack && this.coinTrack.isRunning) {
+        if (dir === 'left') this.coinTrack.setLane('left');
+        else if (dir === 'right') this.coinTrack.setLane('right');
+        else if (dir === 'up') this.coinTrack.performJump();
+        else if (dir === 'down') this.coinTrack.performCrouch();
+      }
     } else if (this.currentScreen === 'screenMemory' && !this.isShowingSequence) {
       this.handleMemoryInput(dir);
     }
@@ -344,13 +387,26 @@ class CognitiveApp {
   }
 
   /* -------------------------------------------------------------
-     MÓDULO 2: CIRCUITO DE OBSTÁCULOS (LATERALIDAD Y REFLEJOS)
+     MÓDULO 2: PISTA MÁGICA DE MONEDAS EN PATINES (CANVAS 2.5D)
      ------------------------------------------------------------- */
   startChallengeModule() {
     window.soundEngine.playClick();
-    this.challengeRound = 0;
     this.showScreen('screenChallenge');
-    this.nextChallengeRound();
+
+    const canvas = document.getElementById('coinRinkCanvas');
+    if (canvas && window.CoinSkateTrack) {
+      if (!this.coinTrack) {
+        this.coinTrack = new window.CoinSkateTrack(canvas, this);
+      }
+      this.coinTrack.start();
+
+      const pipVideo = document.getElementById('trackPipVideo');
+      if (pipVideo && this.motionEngine && this.motionEngine.stream) {
+        pipVideo.srcObject = this.motionEngine.stream;
+      }
+    }
+
+    this.setInstruction('¡Atrapa las monedas moviéndote a los lados con tu cuerpo o tocando la pista!');
   }
 
   nextChallengeRound() {
