@@ -1,0 +1,15 @@
+# Archivos del sistema y temporales
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs y depuración
+*.log
+
+# Entornos virtuales / IDE
+.vscode/
+.idea/
+
+# Scripts locales de subida y credenciales
+subir_*.*
+
