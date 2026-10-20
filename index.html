@@ -117,18 +117,19 @@
           <button class="btn-card-action">Entrar a Calibrar →</button>
         </div>
 
-        <!-- Tarjeta 2: Circuito de Obstáculos -->
+        <!-- Tarjeta 2: Pista de Monedas en Patines -->
         <div id="cardChallenge" class="game-card card-track">
           <div>
-            <div class="game-card-icon">🏁</div>
-            <h3 class="game-card-title">2. Circuito de Obstáculos</h3>
-            <p class="game-card-desc">Patina por los carriles esquivando conos, saltando charcos y agachándote en cuclillas.</p>
+            <div class="game-card-icon">🪙</div>
+            <h3 class="game-card-title">2. Pista de Monedas</h3>
+            <p class="game-card-desc">¡Guía al muñequito patinador con tu cuerpo o pizarra para atrapar todas las monedas en la pista!</p>
             <div class="game-card-tags">
-              <span class="cognitive-tag">Velocidad Motriz</span>
+              <span class="cognitive-tag">Atrapa Monedas</span>
+              <span class="cognitive-tag">Cámara & Pizarra</span>
               <span class="cognitive-tag">Lateralidad</span>
             </div>
           </div>
-          <button class="btn-card-action">Iniciar Carrera →</button>
+          <button class="btn-card-action">¡Entrar a la Pista! ⛸️</button>
         </div>
 
         <!-- Tarjeta 3: Coreografía de Pista -->
@@ -220,60 +221,53 @@
       </div>
     </section>
 
-    <!-- 4. MÓDULO 2: CIRCUITO DE OBSTÁCULOS (PISTA DE PATINAJE DINÁMICA) -->
+    <!-- 4. MÓDULO 2: PISTA MÁGICA DE MONEDAS EN PATINES -->
     <section id="screenChallenge" class="screen">
       <div class="game-stage-wrapper">
         <div class="stage-topbar">
-          <button class="stage-back-btn">← Salir</button>
+          <button class="stage-back-btn">← Volver al Menú</button>
           <div class="stage-info">
-            <h2>Circuito de Obstáculos</h2>
-            <span id="challengeRoundIndicator" class="stage-round-pill">Ronda 1 de 8</span>
+            <h2>Pista Mágica de Patines</h2>
+            <span class="stage-round-pill">⏱️ Tiempo: <strong id="coinGameTimer">60s</strong></span>
           </div>
-          <div class="stage-score">⏱️ Velocidad</div>
+          <div class="stage-score">🪙 <span id="coinGameScore">0</span> Monedas</div>
         </div>
 
         <!-- Banner de Instrucción con voz -->
         <div class="instruction-banner">
-          <span class="stage-instruction-text instruction-text">¡Sigue la orden de pista y esquiva los obstáculos!</span>
+          <span class="stage-instruction-text instruction-text">¡Mueve tu cuerpo frente a la cámara o toca la pizarra para guiar al muñequito y atrapar monedas!</span>
           <button class="speech-repeat-btn" title="Repetir voz">🔊</button>
         </div>
 
-        <div class="skating-circuit-arena">
-          <!-- Vista de la Pista de Patinaje -->
-          <div class="skating-rink-view">
-            <div class="skate-lanes">
-              <div class="skate-lane"><span>Carril Izquierdo</span></div>
-              <div class="skate-lane"><span>Carril Central</span></div>
-              <div class="skate-lane"><span>Carril Derecho</span></div>
+        <!-- Canvas de Pista en Perspectiva 2.5D con el Muñequito y Monedas -->
+        <div class="coin-track-container">
+          <div class="coin-rink-canvas-wrapper">
+            <canvas id="coinRinkCanvas" width="800" height="480"></canvas>
+            
+            <!-- Ventanita PIP de la Cámara en Vivo -->
+            <div class="track-camera-pip" id="trackCameraPipContainer" title="Tu silueta en la cámara">
+              <video id="trackPipVideo" playsinline muted autoplay></video>
+              <canvas id="trackPipCanvas"></canvas>
+              <div class="track-camera-pip-label">📹 TU CÁMARA</div>
             </div>
-
-            <!-- Obstáculo dinámico -->
-            <div id="circuitObstacle" class="circuit-obstacle">⚠️</div>
-
-            <!-- Patinador en pista -->
-            <div id="circuitSkater" class="skater-hero lane-center">🛼</div>
           </div>
 
-          <!-- Controles Táctiles Gigantes de Pizarra Digital -->
-          <div class="whiteboard-dpad-container challenge-dpad">
-            <button class="wb-btn btn-up" data-direction="up">
-              <svg viewBox="0 0 24 24"><path d="M12 4l-8 8h6v8h4v-8h6z"/></svg>
-              <span>⬆️ ¡SALTAR! (ARRIBA)</span>
+          <!-- Botones Táctiles para Pizarra Digital (Smartboard) -->
+          <div class="track-touch-controls-bar">
+            <button id="btnTrackLeft" class="track-touch-btn btn-left" data-direction="left" title="Patinar a la Izquierda">
+              <span>⬅️ IZQUIERDA</span>
             </button>
 
-            <button class="wb-btn btn-left" data-direction="left">
-              <svg viewBox="0 0 24 24"><path d="M4 12l8-8v6h8v4h-8v6z"/></svg>
-              <span>⬅️ IR A LA IZQUIERDA</span>
+            <button id="btnTrackJump" class="track-touch-btn btn-jump" data-direction="up" title="¡Salto para atrapar monedas altas!">
+              <span>⬆️ ¡SALTAR! ⭐</span>
             </button>
 
-            <button class="wb-btn btn-right" data-direction="right">
-              <svg viewBox="0 0 24 24"><path d="M20 12l-8 8v-6H4v-4h8V6z"/></svg>
-              <span>IR A LA DERECHA ➡️</span>
+            <button id="btnTrackCrouch" class="track-touch-btn btn-crouch" data-direction="down" title="¡Agacharse para gemas bajas!">
+              <span>⬇️ ¡AGCHARSE! 💎</span>
             </button>
 
-            <button class="wb-btn btn-down" data-direction="down">
-              <svg viewBox="0 0 24 24"><path d="M12 20l8-8h-6V4h-4v8H4z"/></svg>
-              <span>⬇️ ¡AGCHARSE! (ABAJO)</span>
+            <button id="btnTrackRight" class="track-touch-btn btn-right" data-direction="right" title="Patinar a la Derecha">
+              <span>DERECHA ➡️</span>
             </button>
           </div>
         </div>
@@ -522,9 +516,55 @@
     </div>
   </div>
 
+  <!-- MODAL DE RESUMEN DE MONEDAS ATRAPADAS -->
+  <div id="coinSummaryModal" class="modal-backdrop">
+    <div class="modal-dialog" style="text-align: center; max-width: 520px;">
+      <div style="font-size: 3.5rem; margin-bottom: 8px;">🏆</div>
+      <h3 style="color: #0C4A6E; font-size: 1.8rem; margin-bottom: 6px;">¡Patinada Completada!</h3>
+      <p style="color: #475569; margin-bottom: 20px;">Has guiado al muñequito patinador con gran agilidad y coordinación espacial.</p>
+
+      <div class="coin-summary-grid">
+        <div class="coin-summary-card">
+          <h4>🪙 Monedas Atrapadas</h4>
+          <div id="summaryCoinsCount" class="summary-val">0</div>
+        </div>
+        <div class="coin-summary-card">
+          <h4>🔥 Racha Máxima</h4>
+          <div id="summaryMaxStreak" class="summary-val">x0</div>
+        </div>
+        <div class="coin-summary-card">
+          <h4>⬅️ Lado Izquierdo</h4>
+          <div id="summaryLeftCoins" class="summary-val">0</div>
+        </div>
+        <div class="coin-summary-card">
+          <h4>➡️ Lado Derecho</h4>
+          <div id="summaryRightCoins" class="summary-val">0</div>
+        </div>
+        <div class="coin-summary-card">
+          <h4>⬆️ Saltos Logrados</h4>
+          <div id="summaryJumpCoins" class="summary-val">0</div>
+        </div>
+        <div class="coin-summary-card">
+          <h4>⬇️ Cuclillas Logradas</h4>
+          <div id="summaryCrouchCoins" class="summary-val">0</div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 12px; justify-content: center; margin-top: 18px; flex-wrap: wrap;">
+        <button id="btnPlayAgainTrack" class="btn-primary-action" style="padding: 12px 22px; font-size: 1.05rem;">
+          🔄 Jugar Otra Pista
+        </button>
+        <button id="btnViewReportFromSummary" class="btn-secondary" style="padding: 12px 22px; font-size: 1.05rem;">
+          📊 Ver Reporte Completo
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Scripts Autónomos -->
   <script src="audio.js"></script>
   <script src="camera.js"></script>
+  <script src="track_game.js"></script>
   <script src="report.js"></script>
   <script src="game.js"></script>
 </body>
