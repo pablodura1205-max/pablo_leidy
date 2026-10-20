@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patinaje Cognitivo | Pizarra Digital & Cámara Web</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Encabezado Superior -->
+  <header class="app-header">
+    <div class="logo-area">
+      <div class="logo-icon">⛸️</div>
+      <div class="logo-text">
+        <h1>Patinaje Cognitivo</h1>
+        <span>Ubicación Espacial en Pizarra Digital & Cámara</span>
+      </div>
+    </div>
+    <div class="header-controls">
+      <button id="fullscreenToggleBtn" class="header-btn" title="Pantalla completa para pizarra digital">🖥️ Pantalla Completa</button>
+      <button id="cameraGlobalToggleBtn" class="header-btn" title="Activar/Desactivar Cámara Web">📷 Cámara: OFF</button>
+      <button id="muteToggleBtn" class="header-btn" title="Activar/Silenciar sonido y voz">🔊</button>
+      <button id="helpBtn" class="header-btn" title="Guía pedagógica para docentes y terapeutas">ℹ️ Ayuda</button>
+    </div>
+  </header>
+
+  <!-- Contenedor Principal de Vistas -->
+  <main class="app-container">
+
+    <!-- Feedback animado flotante -->
+    <div id="feedbackOverlay" class="feedback-overlay">🌟 ¡Patinada Perfecta!</div>
+
+    <!-- 1. PANTALLA DE BIENVENIDA / REGISTRO DEL PATINADOR -->
+    <section id="screenWelcome" class="screen active">
+      <div class="welcome-card">
+        <div class="skater-badge-avatar">🛼</div>
+        <h2 class="welcome-title">¡Pista de Patinaje Espacial!</h2>
+        <p class="welcome-subtitle">Aprende arriba, abajo, izquierda y derecha mientras patinas con tu cuerpo frente a la cámara o tocando la pizarra digital.</p>
+
+        <form id="profileForm" class="profile-form">
+          <div class="form-group">
+            <label for="childNameInput">Nombre o Apodo del Patinador/a:</label>
+            <input type="text" id="childNameInput" placeholder="Ej. Mateo o Valentina" required autofocus>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="childAgeInput">Edad del niño/a:</label>
+              <select id="childAgeInput">
+                <option value="4">4 años (Preescolar)</option>
+                <option value="5">5 años (Transición)</option>
+                <option value="6" selected>6 años (1º Primaria)</option>
+                <option value="7">7 años (2º Primaria)</option>
+                <option value="8">8 años (3º Primaria)</option>
+                <option value="9">9 años</option>
+                <option value="10">10+ años</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="childHandInput">Lateralidad Dominante:</label>
+              <select id="childHandInput">
+                <option value="right" selected>Diestro (Derecha)</option>
+                <option value="left">Zurdo (Izquierda)</option>
+                <option value="ambidextrous">En definición / Ambas</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="camera-preference-box">
+            <input type="checkbox" id="enableCameraCheckbox" checked>
+            <label for="enableCameraCheckbox">
+              <strong>Activar Cámara Web Interactiva:</strong> Permite que el niño salte (arriba), se agache (abajo) y se incline (izq/der) con su cuerpo real.
+            </label>
+          </div>
+
+          <button type="submit" class="btn-start">
+            <span>¡Entrar a la Pista de Patinaje! ⛸️</span>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 2. HUB DE ACTIVIDADES (MAPA DE LA PISTA) -->
+    <section id="screenHub" class="screen">
+      <div class="adventure-header">
+        <div class="child-badge">
+          <div class="child-avatar-mini">🛼</div>
+          <div class="child-info">
+            <h3 id="hubChildName">Mateo</h3>
+            <p id="hubChildAge">6 años</p>
+          </div>
+        </div>
+        <div class="progress-summary">
+          <div id="cameraHubBadge" class="camera-status-pill">📷 Cámara Lista</div>
+          <div class="star-counter">
+            <span>⭐</span>
+            <span id="hubStarsCount">0</span>
+            <span>Trofeos</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="game-cards-grid">
+        <!-- Tarjeta 1: Escuela de Patinaje -->
+        <div id="cardLearn" class="game-card card-learn">
+          <div>
+            <div class="game-card-icon">🧭</div>
+            <h3 class="game-card-title">1. Escuela de Patinaje</h3>
+            <p class="game-card-desc">Calibra tus movimientos corporales frente a la cámara o prueba los toques gigantes en la pizarra.</p>
+            <div class="game-card-tags">
+              <span class="cognitive-tag">Esquema Corporal</span>
+              <span class="cognitive-tag">Calibración</span>
+            </div>
+          </div>
+          <button class="btn-card-action">Entrar a Calibrar →</button>
+        </div>
+
+        <!-- Tarjeta 2: Circuito de Obstáculos -->
+        <div id="cardChallenge" class="game-card card-track">
+          <div>
+            <div class="game-card-icon">🏁</div>
+            <h3 class="game-card-title">2. Circuito de Obstáculos</h3>
+            <p class="game-card-desc">Patina por los carriles esquivando conos, saltando charcos y agachándote en cuclillas.</p>
+            <div class="game-card-tags">
+              <span class="cognitive-tag">Velocidad Motriz</span>
+              <span class="cognitive-tag">Lateralidad</span>
+            </div>
+          </div>
+          <button class="btn-card-action">Iniciar Carrera →</button>
+        </div>
+
+        <!-- Tarjeta 3: Coreografía de Pista -->
+        <div id="cardMemory" class="game-card card-memory">
+          <div>
+            <div class="game-card-icon">🎵</div>
+            <h3 class="game-card-title">3. Coreografía de Pista</h3>
+            <p class="game-card-desc">Memoriza la secuencia de patinaje y repite los giros y saltos en el orden exacto.</p>
+            <div class="game-card-tags">
+              <span class="cognitive-tag">Memoria de Trabajo</span>
+              <span class="cognitive-tag">Planificación Motriz</span>
+            </div>
+          </div>
+          <button class="btn-card-action">Memorizar Rutina →</button>
+        </div>
+
+        <!-- Tarjeta 4: Laberinto de Conos -->
+        <div id="cardMatrix" class="game-card card-matrix">
+          <div>
+            <div class="game-card-icon">🛼</div>
+            <h3 class="game-card-title">4. Laberinto de Conos</h3>
+            <p class="game-card-desc">Identifica la ubicación relativa de los obstáculos alrededor del patinador central.</p>
+            <div class="game-card-tags">
+              <span class="cognitive-tag">Espacio Relativo</span>
+              <span class="cognitive-tag">Visoespacial</span>
+            </div>
+          </div>
+          <button class="btn-card-action">Explorar Laberinto →</button>
+        </div>
+      </div>
+
+      <button id="btnGoReport" class="btn-view-report-big">
+        <span>📊 Ver Reporte Cognitivo, Motriz y Recomendaciones</span>
+      </button>
+    </section>
+
+    <!-- 3. MÓDULO 1: ESCUELA DE PATINAJE (TUTORIAL & CALIBRACIÓN) -->
+    <section id="screenLearn" class="screen">
+      <div class="game-stage-wrapper">
+        <div class="stage-topbar">
+          <button class="stage-back-btn">← Volver al Menú</button>
+          <div class="stage-info">
+            <h2>Escuela de Patinaje</h2>
+            <span class="stage-round-pill">Calibración de Cámara y Pizarra</span>
+          </div>
+          <div class="stage-score">🌟 Práctica</div>
+        </div>
+
+        <!-- Banner de Instrucción con voz -->
+        <div class="instruction-banner">
+          <span class="stage-instruction-text instruction-text">Mueve tus brazos hacia una zona de la cámara o toca un botón gigante.</span>
+          <button class="speech-repeat-btn" title="Repetir voz">🔊</button>
+        </div>
+
+        <!-- HUD de Cámara Web en Vivo -->
+        <div class="camera-hud-container" id="cameraHudSection">
+          <div class="camera-preview-wrapper">
+            <video id="webcamVideo" class="camera-video" playsinline muted></video>
+            <canvas id="cameraArCanvas" class="camera-ar-canvas"></canvas>
+          </div>
+          <div class="camera-status-bar">
+            <span id="cameraDetectionStatus">🟢 Visión Activa: Muévete en las zonas marcadas</span>
+            <button id="toggleCameraInGameBtn" class="camera-toggle-btn">Pausar Cámara</button>
+          </div>
+        </div>
+
+        <!-- Botones Táctiles para Pizarra Digital -->
+        <div class="whiteboard-dpad-container">
+          <button class="wb-btn btn-up" data-direction="up" title="Arriba: ¡Salto de Patinaje!">
+            <svg viewBox="0 0 24 24"><path d="M12 4l-8 8h6v8h4v-8h6z"/></svg>
+            <span>⬆️ SALTO (ARRIBA)</span>
+          </button>
+
+          <button class="wb-btn btn-left" data-direction="left" title="Izquierda: ¡Patinar a la Izquierda!">
+            <svg viewBox="0 0 24 24"><path d="M4 12l8-8v6h8v4h-8v6z"/></svg>
+            <span>⬅️ PATINAR IZQUIERDA</span>
+          </button>
+
+          <button class="wb-btn btn-right" data-direction="right" title="Derecha: ¡Patinar a la Derecha!">
+            <svg viewBox="0 0 24 24"><path d="M20 12l-8 8v-6H4v-4h8V6z"/></svg>
+            <span>PATINAR DERECHA ➡️</span>
+          </button>
+
+          <button class="wb-btn btn-down" data-direction="down" title="Abajo: ¡Agacharse en Cuclillas!">
+            <svg viewBox="0 0 24 24"><path d="M12 20l8-8h-6V4h-4v8H4z"/></svg>
+            <span>⬇️ CUCLILLAS (ABAJO)</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. MÓDULO 2: CIRCUITO DE OBSTÁCULOS (PISTA DE PATINAJE DINÁMICA) -->
+    <section id="screenChallenge" class="screen">
+      <div class="game-stage-wrapper">
+        <div class="stage-topbar">
+          <button class="stage-back-btn">← Salir</button>
+          <div class="stage-info">
+            <h2>Circuito de Obstáculos</h2>
+            <span id="challengeRoundIndicator" class="stage-round-pill">Ronda 1 de 8</span>
+          </div>
+          <div class="stage-score">⏱️ Velocidad</div>
+        </div>
+
+        <!-- Banner de Instrucción con voz -->
+        <div class="instruction-banner">
+          <span class="stage-instruction-text instruction-text">¡Sigue la orden de pista y esquiva los obstáculos!</span>
+          <button class="speech-repeat-btn" title="Repetir voz">🔊</button>
+        </div>
+
+        <div class="skating-circuit-arena">
+          <!-- Vista de la Pista de Patinaje -->
+          <div class="skating-rink-view">
+            <div class="skate-lanes">
+              <div class="skate-lane"><span>Carril Izquierdo</span></div>
+              <div class="skate-lane"><span>Carril Central</span></div>
+              <div class="skate-lane"><span>Carril Derecho</span></div>
+            </div>
+
+            <!-- Obstáculo dinámico -->
+            <div id="circuitObstacle" class="circuit-obstacle">⚠️</div>
+
+            <!-- Patinador en pista -->
+            <div id="circuitSkater" class="skater-hero lane-center">🛼</div>
+          </div>
+
+          <!-- Controles Táctiles Gigantes de Pizarra Digital -->
+          <div class="whiteboard-dpad-container challenge-dpad">
+            <button class="wb-btn btn-up" data-direction="up">
+              <svg viewBox="0 0 24 24"><path d="M12 4l-8 8h6v8h4v-8h6z"/></svg>
+              <span>⬆️ ¡SALTAR! (ARRIBA)</span>
+            </button>
+
+            <button class="wb-btn btn-left" data-direction="left">
+              <svg viewBox="0 0 24 24"><path d="M4 12l8-8v6h8v4h-8v6z"/></svg>
+              <span>⬅️ IR A LA IZQUIERDA</span>
+            </button>
+
+            <button class="wb-btn btn-right" data-direction="right">
+              <svg viewBox="0 0 24 24"><path d="M20 12l-8 8v-6H4v-4h8V6z"/></svg>
+              <span>IR A LA DERECHA ➡️</span>
+            </button>
+
+            <button class="wb-btn btn-down" data-direction="down">
+              <svg viewBox="0 0 24 24"><path d="M12 20l8-8h-6V4h-4v8H4z"/></svg>
+              <span>⬇️ ¡AGCHARSE! (ABAJO)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. MÓDULO 3: COREOGRAFÍA DE PATINAJE (MEMORIA DE SECUENCIA) -->
+    <section id="screenMemory" class="screen">
+      <div class="game-stage-wrapper">
+        <div class="stage-topbar">
+          <button class="stage-back-btn">← Salir</button>
+          <div class="stage-info">
+            <h2>Coreografía de Pista</h2>
+            <span id="memoryLevelIndicator" class="stage-round-pill">Nivel 1 (2 pasos)</span>
+          </div>
+          <div class="stage-score">🧠 Memoria</div>
+        </div>
+
+        <!-- Banner de Instrucción con voz -->
+        <div class="instruction-banner">
+          <span class="stage-instruction-text instruction-text">Observa y memoriza los pasos de patinaje...</span>
+          <button class="speech-repeat-btn" title="Repetir voz">🔊</button>
+        </div>
+
+        <div class="skating-circuit-arena">
+          <div id="memorySlots" class="sequence-dots-container"></div>
+
+          <div class="whiteboard-dpad-container memory-dpad">
+            <button class="wb-btn btn-up" data-direction="up">
+              <svg viewBox="0 0 24 24"><path d="M12 4l-8 8h6v8h4v-8h6z"/></svg>
+              <span>⬆️ SALTO (ARRIBA)</span>
+            </button>
+
+            <button class="wb-btn btn-left" data-direction="left">
+              <svg viewBox="0 0 24 24"><path d="M4 12l8-8v6h8v4h-8v6z"/></svg>
+              <span>⬅️ PATINAR IZQUIERDA</span>
+            </button>
+
+            <button class="wb-btn btn-right" data-direction="right">
+              <svg viewBox="0 0 24 24"><path d="M20 12l-8 8v-6H4v-4h8V6z"/></svg>
+              <span>PATINAR DERECHA ➡️</span>
+            </button>
+
+            <button class="wb-btn btn-down" data-direction="down">
+              <svg viewBox="0 0 24 24"><path d="M12 20l8-8h-6V4h-4v8H4z"/></svg>
+              <span>⬇️ CUCLILLAS (ABAJO)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. MÓDULO 4: LABERINTO DE CONOS (ESPACIO TOPOLÓGICO) -->
+    <section id="screenMatrix" class="screen">
+      <div class="game-stage-wrapper">
+        <div class="stage-topbar">
+          <button class="stage-back-btn">← Salir</button>
+          <div class="stage-info">
+            <h2>Laberinto de Conos</h2>
+            <span id="matrixRoundIndicator" class="stage-round-pill">Ronda 1 de 6</span>
+          </div>
+          <div class="stage-score">🛼 Espacio Relativo</div>
+        </div>
+
+        <!-- Banner de Instrucción con voz -->
+        <div class="instruction-banner">
+          <span class="stage-instruction-text instruction-text">Toca el cono según la posición solicitada</span>
+          <button class="speech-repeat-btn" title="Repetir voz">🔊</button>
+        </div>
+
+        <div class="skating-circuit-arena">
+          <div class="grid-3x3">
+            <div class="grid-cell" data-direction="up-left">🚩</div>
+            <div class="grid-cell" data-direction="up">🟡</div>
+            <div class="grid-cell" data-direction="up-right">🏁</div>
+
+            <div class="grid-cell" data-direction="left">🟠</div>
+            <div class="grid-cell center-cell" data-direction="center">⛸️</div>
+            <div class="grid-cell" data-direction="right">🔵</div>
+
+            <div class="grid-cell" data-direction="down-left">⭐</div>
+            <div class="grid-cell" data-direction="down">🟢</div>
+            <div class="grid-cell" data-direction="down-right">✨</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. PANTALLA DE REPORTE COGNITIVO Y PSICOMOTRIZ -->
+    <section id="screenReport" class="screen">
+      <div class="report-container">
+        <!-- Encabezado del reporte -->
+        <div class="report-header">
+          <div class="report-title">
+            <h2>Informe de Desempeño Psicomotriz y Orientación Espacial</h2>
+            <p>Evaluación de lateralidad, reflejos motores y funciones ejecutivas en patinaje (Pizarra Digital / Cámara).</p>
+          </div>
+          <div class="report-actions">
+            <button id="btnPrintReport" class="btn-primary-action">
+              <span>🖨️ Imprimir / Guardar PDF</span>
+            </button>
+            <button id="btnBackToHubFromReport" class="btn-secondary">
+              <span>← Volver a la Pista</span>
+            </button>
+            <button id="btnRestartAll" class="btn-secondary" title="Evaluar a otro alumno">
+              <span>🔄 Nueva Sesión</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Ficha del Niño -->
+        <div class="child-profile-card">
+          <div>
+            <div class="profile-field-label">Nombre del Patinador/a</div>
+            <div id="reportChildName" class="profile-field-value">Mateo</div>
+          </div>
+          <div>
+            <div class="profile-field-label">Edad Cronológica</div>
+            <div id="reportChildAge" class="profile-field-value">6 años</div>
+          </div>
+          <div>
+            <div class="profile-field-label">Lateralidad Dominante</div>
+            <div id="reportChildHand" class="profile-field-value">Diestro</div>
+          </div>
+          <div>
+            <div class="profile-field-label">Fecha de Evaluación</div>
+            <div id="reportDate" class="profile-field-value">13 de Octubre de 2026</div>
+          </div>
+        </div>
+
+        <!-- Tarjetas KPI -->
+        <div class="kpi-grid">
+          <div class="kpi-card score">
+            <span class="kpi-label">Precisión en Pista</span>
+            <div id="kpiGlobalScore" class="kpi-value">92%</div>
+            <span class="kpi-subtext">Aciertos totales en desafíos</span>
+          </div>
+
+          <div class="kpi-card lateral">
+            <span class="kpi-label">Lateralidad (Izq / Der)</span>
+            <div id="kpiLateralScore" class="kpi-value">85%</div>
+            <div><span id="kpiLateralBadge" class="badge-status badge-green">Consolidada</span></div>
+          </div>
+
+          <div class="kpi-card vertical">
+            <span class="kpi-label">Eje Vertical (Saltos/Bajo)</span>
+            <div id="kpiVerticalScore" class="kpi-value">100%</div>
+            <div><span id="kpiVerticalBadge" class="badge-status badge-green">Excelente</span></div>
+          </div>
+
+          <div class="kpi-card speed">
+            <span class="kpi-label">Velocidad de Reacción</span>
+            <div id="kpiSpeedScore" class="kpi-value">1.45s</div>
+            <div><span id="kpiSpeedBadge" class="badge-status badge-green">Reflejos Ágiles</span></div>
+          </div>
+        </div>
+
+        <!-- Gráfico de Radar + Barras de Desglose -->
+        <div class="report-visuals">
+          <div class="radar-chart-card">
+            <h4>Perfil Psicomotor de Dimensiones Espaciales</h4>
+            <canvas id="cognitiveRadarCanvas" width="340" height="300"></canvas>
+          </div>
+
+          <div class="breakdown-card">
+            <div class="progress-skill-bar">
+              <div class="skill-info">
+                <span>Eje Vertical (Saltos y Cuclillas)</span>
+                <span id="textVertical">100%</span>
+              </div>
+              <div class="skill-bar-bg">
+                <div id="barVertical" class="skill-bar-fill" style="width: 100%; background: #3B82F6;"></div>
+              </div>
+            </div>
+
+            <div class="progress-skill-bar">
+              <div class="skill-info">
+                <span>Lateralidad y Giros (Izquierda / Derecha)</span>
+                <span id="textHorizontal">85%</span>
+              </div>
+              <div class="skill-bar-bg">
+                <div id="barHorizontal" class="skill-bar-fill" style="width: 85%; background: #EF4444;"></div>
+              </div>
+            </div>
+
+            <div class="progress-skill-bar">
+              <div class="skill-info">
+                <span>Memoria de Coreografía en Pista</span>
+                <span id="textMemory">90%</span>
+              </div>
+              <div class="skill-bar-bg">
+                <div id="barMemory" class="skill-bar-fill" style="width: 90%; background: #10B981;"></div>
+              </div>
+            </div>
+
+            <div class="progress-skill-bar">
+              <div class="skill-info">
+                <span>Orientación en Espacio Relativo</span>
+                <span id="textMatrix">95%</span>
+              </div>
+              <div class="skill-bar-bg">
+                <div id="barMatrix" class="skill-bar-fill" style="width: 95%; background: #F59E0B;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Análisis Diagnóstico Dinámico -->
+        <div class="report-section">
+          <h3 class="section-heading">
+            <span>🔬</span> Interpretación Psicomotriz y Cognitiva
+          </h3>
+          <div id="pedagogicalAnalysisText" class="analysis-box"></div>
+        </div>
+
+        <!-- Plan de Estimulación y Recomendaciones -->
+        <div class="report-section">
+          <h3 class="section-heading">
+            <span>💡</span> Aporte Pedagógico: Recomendaciones para Pizarra Digital y Pista
+          </h3>
+          <div id="recommendationsList" class="recommendations-list"></div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL DE AYUDA Y GUÍA DOCENTE -->
+  <div id="infoModal" class="modal-backdrop">
+    <div class="modal-dialog">
+      <button id="closeModalBtn" class="modal-close-btn">&times;</button>
+      <h3 style="margin-bottom: 12px; color: #0C4A6E; font-size: 1.4rem;">📘 Guía para Pizarra Digital y Cámara</h3>
+      <p style="margin-bottom: 14px; line-height: 1.6; color: #334151;">
+        Esta plataforma fusiona la <strong>psicomotricidad vivenciada</strong> del patinaje con la <strong>tecnología interactiva de pizarras digitales</strong> y <strong>cámaras web</strong>.
+      </p>
+      <h4 style="margin-bottom: 8px; color: #0369A1;">Modos de Uso:</h4>
+      <ul style="margin-left: 20px; margin-bottom: 16px; line-height: 1.6; color: #475569;">
+        <li><strong>📷 Modo Cámara en Vivo:</strong> El niño se coloca frente a la cámara (a 1.5 - 2 metros). Cuando salta (zona superior), se agacha (zona inferior) o se inclina (izq/der), la visión artificial detecta su cuerpo y acciona el patinador.</li>
+        <li><strong>🖥️ Modo Pizarra Digital (Smartboard):</strong> Pulsa el botón "Pantalla Completa". Los botones gigantes en cruz permiten que el niño toque directamente la pantalla con sus manos o con un lápiz óptico.</li>
+        <li><strong>🎹 Teclado:</strong> Las teclas de flechas (↑, ↓, ←, →) también están activadas para mayor versatilidad.</li>
+      </ul>
+      <p style="font-size: 0.9rem; color: #64748B; border-top: 1px solid #E2E8F0; padding-top: 12px;">
+        💡 <em>Consejo: Al finalizar la clase o sesión, pulsa "Imprimir / Guardar PDF" para entregar el informe psicopedagógico a los padres o al equipo docente.</em>
+      </p>
+    </div>
+  </div>
+
+  <!-- Scripts Autónomos -->
+  <script src="audio.js"></script>
+  <script src="camera.js"></script>
+  <script src="report.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
