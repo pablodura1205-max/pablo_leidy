@@ -150,6 +150,49 @@ class SoundEngine {
     } catch(e) {}
   }
 
+  // Sonido de recolección de moneda (cristalino y brillante)
+  playCoinCollect() {
+    if (this.isMuted) return;
+    this.initAudioContext();
+    if (!this.audioCtx) return;
+    try {
+      const osc1 = this.audioCtx.createOscillator();
+      const osc2 = this.audioCtx.createOscillator();
+      const gain = this.audioCtx.createGain();
+
+      osc1.type = 'sine';
+      osc2.type = 'triangle';
+
+      osc1.frequency.setValueAtTime(987.77, this.audioCtx.currentTime); // Si
+      osc1.frequency.setValueAtTime(1318.51, this.audioCtx.currentTime + 0.08); // Mi agudo
+
+      osc2.frequency.setValueAtTime(1975.53, this.audioCtx.currentTime + 0.08); // Si muy agudo
+
+      gain.gain.setValueAtTime(0.18, this.audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.audioCtx.currentTime + 0.35);
+
+      osc1.connect(gain);
+      osc2.connect(gain);
+      gain.connect(this.audioCtx.destination);
+
+      osc1.start();
+      osc2.start(this.audioCtx.currentTime + 0.08);
+      osc1.stop(this.audioCtx.currentTime + 0.35);
+      osc2.stop(this.audioCtx.currentTime + 0.35);
+    } catch(e) {}
+  }
+
+  // Sonido de super estrella o racha de monedas
+  playGemCollect() {
+    if (this.isMuted) return;
+    const notes = [587.33, 739.99, 880.00, 1174.66];
+    notes.forEach((freq, idx) => {
+      setTimeout(() => {
+        this.playTone(freq, 'triangle', 0.18, 0.15);
+      }, idx * 50);
+    });
+  }
+
   // Tono específico por dirección para memoria espacial
   playDirectionTone(direction) {
     const tones = {
